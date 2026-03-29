@@ -25,28 +25,18 @@ class _SplashScreenState extends State<SplashScreen> with WidgetsBindingObserver
   void initState() {
     super.initState();
 
-    bool isFirstTime = true;
-
-     subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) async {
-      if(await ApiChecker.isVpnActive()) {
+    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) async {
+      if (await ApiChecker.isVpnActive()) {
         showCustomSnackBarHelper('you are using vpn', isVpn: true, duration: const Duration(minutes: 10));
-      }
-      if(isFirstTime) {
-        isFirstTime = false;
-        await _route();
       }
     });
 
-     _route();
-
-
-
-
+    _route();
   }
-
 
   @override
   void dispose() {
+    subscription.cancel();
     super.dispose();
   }
 

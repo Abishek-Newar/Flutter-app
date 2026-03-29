@@ -114,8 +114,8 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
                           AppConstants.languages[localizationController.selectedIndex]
                               .countryCode,
                         ));
-                        if(!Navigator.canPop(Get.context!)){
-                          Get.offNamed(RouteHelper.getChoseLoginRegRoute());
+                        if(!Navigator.canPop(context)){
+                          Get.offAllNamed(RouteHelper.getChoseLoginRegRoute());
                         }else{
                           Get.back();
                         }

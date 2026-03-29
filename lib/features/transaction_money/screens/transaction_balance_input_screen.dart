@@ -59,7 +59,7 @@ class _TransactionBalanceInputScreenState extends State<TransactionBalanceInputS
     if(widget.transactionType == TransactionType.withdrawRequest) {
       Get.find<TransactionMoneyController>().getWithdrawMethods();
     }
-    Get.find<AddMoneyController>().setPaymentMethod(null, isUpdate: false);
+    // Payment method selection no longer used for add money (bank transfer flow)
 
     _inputAmountController.addListener(() {
       setState(() {
@@ -308,7 +308,10 @@ class _TransactionBalanceInputScreenState extends State<TransactionBalanceInputS
                         showCustomSnackBarHelper('transaction_amount_must_be'.tr,isError: true);
                       }else {
                         bool inSufficientBalance = false;
-                        bool isPaymentSelect = Get.find<AddMoneyController>().paymentMethod != null;
+                        // Add money navigates directly to BankListScreen — no payment method gate needed
+                        bool isPaymentSelect = widget.transactionType == TransactionType.addMoney
+                            ? true
+                            : false;
 
 
 
@@ -345,9 +348,8 @@ class _TransactionBalanceInputScreenState extends State<TransactionBalanceInputS
                     }
                   },
                   backgroundColor: Theme.of(context).colorScheme.secondary,
-                  child: GetBuilder<AddMoneyController>(builder: (addMoneyController) {
-                    return addMoneyController.isLoading ||
-                        transactionMoneyController.isLoading
+                  child: GetBuilder<TransactionMoneyController>(builder: (ctrl) {
+                    return ctrl.isLoading
                         ? const CircularProgressIndicator()
                         : const NextButtonWidget(isSubmittable: true);
                   }),

@@ -25,9 +25,9 @@ class ApiClient extends GetxService {
     required this.sharedPreferences,
     required this.deiceInfo,
     required this.uniqueId,
-
-  })
-  {
+  }) {
+    // Restore previously saved auth token so authenticated requests work on restart
+    token = sharedPreferences.getString(AppConstants.token);
 
     _mainHeaders = {
       'Content-Type': 'application/json; charset=UTF-8',
