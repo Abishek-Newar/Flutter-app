@@ -9,7 +9,7 @@ import '../controllers/otp_verification_controller.dart';
 /// Each card shows an icon, bilingual name, and description.
 /// Tapping a card calls [OtpVerificationController.selectMethod].
 class OtpMethodSelector extends StatelessWidget {
-  const OtpMethodSelector({Key? key}) : super(key: key);
+  const OtpMethodSelector({super.key});
 
   static const _methods = OtpMethod.values;
 
@@ -83,14 +83,13 @@ class _MethodCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const _MethodCard({
-    Key? key,
     required this.method,
     required this.icon,
     required this.name,
     required this.desc,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +106,7 @@ class _MethodCard extends StatelessWidget {
           curve: Curves.easeInOut,
           decoration: BoxDecoration(
             color: isSelected
-                ? primary.withOpacity(0.07)
+                ? primary.withValues(alpha: 0.07)
                 : Theme.of(context).cardColor,
             border: Border.all(
               color: isSelected ? primary : Colors.grey.shade300,
@@ -115,7 +114,7 @@ class _MethodCard extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(14),
             boxShadow: isSelected
-                ? [BoxShadow(color: primary.withOpacity(0.15), blurRadius: 12, offset: const Offset(0, 4))]
+                ? [BoxShadow(color: primary.withValues(alpha: 0.15), blurRadius: 12, offset: const Offset(0, 4))]
                 : [],
           ),
           child: Stack(

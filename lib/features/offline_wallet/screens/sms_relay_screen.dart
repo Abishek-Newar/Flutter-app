@@ -1,4 +1,3 @@
-import '../domain/models/offline_wallet_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../l10n/offline_wallet_localizations.dart';

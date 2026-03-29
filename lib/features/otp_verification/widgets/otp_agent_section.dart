@@ -9,7 +9,7 @@ import '../controllers/otp_verification_controller.dart';
 class OtpAgentSection extends StatelessWidget {
   final String identifier;
 
-  const OtpAgentSection({Key? key, required this.identifier}) : super(key: key);
+  const OtpAgentSection({super.key, required this.identifier});
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +21,13 @@ class OtpAgentSection extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            primary.withOpacity(0.06),
+            primary.withValues(alpha: 0.06),
             Colors.white,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        border: Border.all(color: primary.withOpacity(0.2)),
+        border: Border.all(color: primary.withValues(alpha: 0.2)),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -41,7 +41,7 @@ class OtpAgentSection extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),

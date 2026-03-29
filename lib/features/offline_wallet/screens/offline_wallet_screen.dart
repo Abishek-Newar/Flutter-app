@@ -25,12 +25,10 @@ class OfflineWalletScreen extends StatefulWidget {
 }
 
 class _OfflineWalletScreenState extends State<OfflineWalletScreen> {
-  late OfflineWalletController _ctrl;
-
   @override
   void initState() {
     super.initState();
-    _ctrl = Get.find<OfflineWalletController>();
+    Get.find<OfflineWalletController>();
   }
 
   @override

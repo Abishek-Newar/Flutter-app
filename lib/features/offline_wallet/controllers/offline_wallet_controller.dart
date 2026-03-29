@@ -5,9 +5,7 @@
 // and OfflineWalletRepo into the app's GetX + ApiClient pattern.
 
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:naqde_user/data/api/api_checker.dart';
 import 'package:naqde_user/features/setting/controllers/profile_screen_controller.dart';
 import 'package:naqde_user/helper/custom_snackbar_helper.dart';
 import '../domain/models/offline_wallet_models.dart';

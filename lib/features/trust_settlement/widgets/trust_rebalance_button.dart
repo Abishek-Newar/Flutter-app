@@ -8,7 +8,7 @@ import '../domain/models/trust_model.dart';
 /// Rebalance button + result message card.
 /// Admin-facing: triggers POST /trust/rebalance.
 class TrustRebalanceButton extends StatelessWidget {
-  const TrustRebalanceButton({Key? key}) : super(key: key);
+  const TrustRebalanceButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class TrustRebalanceButton extends StatelessWidget {
 
 class _RebalanceResultCard extends StatelessWidget {
   final RebalanceResultModel result;
-  const _RebalanceResultCard({Key? key, required this.result}) : super(key: key);
+  const _RebalanceResultCard({required this.result});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,7 @@ class _RebalanceResultCard extends StatelessWidget {
 class _MessageBanner extends StatelessWidget {
   final bool isError;
   final String text;
-  const _MessageBanner({Key? key, required this.isError, required this.text}) : super(key: key);
+  const _MessageBanner({required this.isError, required this.text});
 
   @override
   Widget build(BuildContext context) {

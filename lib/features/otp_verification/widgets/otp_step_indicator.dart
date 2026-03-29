@@ -9,10 +9,10 @@ class OtpStepIndicator extends StatelessWidget {
   final int totalSteps;
 
   const OtpStepIndicator({
-    Key? key,
+    super.key,
     this.currentStep = 3,
     this.totalSteps = 4,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +41,8 @@ class OtpStepIndicator extends StatelessWidget {
                     colors: [
                       success,
                       success,
-                      primary.withOpacity(0.3),
-                      primary.withOpacity(0.1),
+                      primary.withValues(alpha: 0.3),
+                      primary.withValues(alpha: 0.1),
                     ],
                     stops: [0, (currentStep - 1) / (totalSteps - 1), (currentStep - 1) / (totalSteps - 1), 1],
                   ),
@@ -81,13 +81,12 @@ class _StepBubble extends StatelessWidget {
   final Color success;
 
   const _StepBubble({
-    Key? key,
     required this.step,
     required this.isCompleted,
     required this.isActive,
     required this.primary,
     required this.success,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +117,7 @@ class _StepBubble extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 2.5),
           boxShadow: isActive
-              ? [BoxShadow(color: primary.withOpacity(0.35), blurRadius: 10, offset: const Offset(0, 4))]
+              ? [BoxShadow(color: primary.withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 4))]
               : [],
         ),
         child: Center(

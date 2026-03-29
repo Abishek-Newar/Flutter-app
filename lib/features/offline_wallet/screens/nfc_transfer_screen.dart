@@ -136,7 +136,7 @@ class _NFCTransferScreenState extends State<NFCTransferScreen>
                 height: 160,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   border: Border.all(color: Colors.white38, width: 3),
                 ),
                 child: const Icon(Icons.nfc, color: Colors.white, size: 80),
@@ -183,8 +183,8 @@ class _NFCTransferScreenState extends State<NFCTransferScreen>
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: _lastEvent == NFCEventType.error
-                      ? Colors.red.withOpacity(0.2)
-                      : Colors.green.withOpacity(0.2),
+                      ? Colors.red.withValues(alpha: 0.2)
+                      : Colors.green.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: _lastEvent == NFCEventType.error

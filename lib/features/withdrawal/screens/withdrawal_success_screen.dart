@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:naqde_user/features/withdrawal/domain/models/withdrawal_model.dart';
 import 'package:naqde_user/helper/route_helper.dart';
 import 'package:naqde_user/util/dimensions.dart';
 import 'package:naqde_user/util/styles.dart';
@@ -29,7 +28,7 @@ class WithdrawalSuccessScreen extends StatelessWidget {
                   child: Lottie.asset(
                     'assets/animationFile/success.json',
                     repeat: false,
-                    errorBuilder: (_, __, ___) => Icon(
+                    errorBuilder: (_, _, _) => Icon(
                       Icons.check_circle_outline,
                       size: 100,
                       color: Colors.green.shade600,
@@ -72,7 +71,7 @@ class WithdrawalSuccessScreen extends StatelessWidget {
                     vertical: Dimensions.paddingSizeSmall,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.06),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.06),
                     borderRadius: BorderRadius.circular(Dimensions.radiusSizeSmall),
                   ),
                   child: Row(children: [

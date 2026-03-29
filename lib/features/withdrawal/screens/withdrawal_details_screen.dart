@@ -36,7 +36,7 @@ class WithdrawalDetailsScreen extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.08),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(Dimensions.radiusSizeDefault),
                   ),
                   child: Column(

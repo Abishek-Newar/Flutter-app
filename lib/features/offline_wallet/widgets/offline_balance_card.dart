@@ -1,7 +1,6 @@
 import '../domain/models/offline_wallet_models.dart';
 import 'package:flutter/material.dart';
 import '../l10n/offline_wallet_localizations.dart';
-import '../services/offline_transaction_service.dart';
 
 /// CircleCash — Offline Balance Card Widget
 /// Displays confirmed, pending, and spendable balances in SDG.
@@ -38,7 +37,7 @@ class OfflineBalanceCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: (balance.isFrozen ? Colors.grey : const Color(0xFF1976D2))
-                .withOpacity(0.35),
+                .withValues(alpha: 0.35),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -56,7 +55,7 @@ class OfflineBalanceCard extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.07),
+                color: Colors.white.withValues(alpha: 0.07),
               ),
             ),
           ),
@@ -69,7 +68,7 @@ class OfflineBalanceCard extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withValues(alpha: 0.05),
               ),
             ),
           ),
@@ -101,7 +100,7 @@ class OfflineBalanceCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.8),
+                          color: Colors.red.withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -174,9 +173,9 @@ class OfflineBalanceCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.25),
+                      color: Colors.red.withValues(alpha: 0.25),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red.withOpacity(0.5)),
+                      border: Border.all(color: Colors.red.withValues(alpha: 0.5)),
                     ),
                     child: Row(
                       children: [

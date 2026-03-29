@@ -15,7 +15,6 @@ import 'package:naqde_user/features/splash/controllers/splash_controller.dart';
 import 'package:naqde_user/helper/price_converter_helper.dart';
 import 'package:naqde_user/helper/route_helper.dart';
 import 'package:naqde_user/helper/transaction_type.dart';
-import 'package:naqde_user/util/dimensions.dart';
 import 'package:naqde_user/util/styles.dart';
 import 'package:naqde_user/features/home/widgets/banner_widget.dart';
 import 'package:naqde_user/features/transaction_money/screens/transaction_money_screen.dart';

@@ -82,10 +82,10 @@ class _SendPaymentScreenState extends State<SendPaymentScreen> {
                           return Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF1976D2).withOpacity(0.08),
+                              color: const Color(0xFF1976D2).withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: const Color(0xFF1976D2).withOpacity(0.3)),
+                                  color: const Color(0xFF1976D2).withValues(alpha: 0.3)),
                             ),
                             child: Row(
                               children: [
@@ -254,7 +254,7 @@ class _SendPaymentScreenState extends State<SendPaymentScreen> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
+                      color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 8,
                       offset: const Offset(0, -2),
                     )
@@ -407,7 +407,7 @@ class _TransmissionSelector extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: isSelected ? m.$4.withOpacity(0.12) : Colors.white,
+              color: isSelected ? m.$4.withValues(alpha: 0.12) : Colors.white,
               border: Border.all(
                 color: isSelected ? m.$4 : Colors.grey.shade300,
                 width: isSelected ? 2 : 1,

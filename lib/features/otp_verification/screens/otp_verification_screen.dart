@@ -5,7 +5,6 @@ import 'package:naqde_user/common/widgets/custom_large_widget.dart';
 import 'package:naqde_user/common/widgets/custom_logo_widget.dart';
 import 'package:naqde_user/features/auth/controllers/auth_controller.dart';
 import 'package:naqde_user/features/auth/controllers/create_account_controller.dart';
-import 'package:naqde_user/helper/route_helper.dart';
 import 'package:naqde_user/util/dimensions.dart';
 import 'package:naqde_user/util/styles.dart';
 import '../controllers/otp_verification_controller.dart';
@@ -35,10 +34,10 @@ class OtpVerificationScreen extends StatefulWidget {
   final bool isForgetPassword;
 
   const OtpVerificationScreen({
-    Key? key,
+    super.key,
     this.phoneNumber,
     this.isForgetPassword = false,
-  }) : super(key: key);
+  });
 
   @override
   State<OtpVerificationScreen> createState() =>
@@ -201,7 +200,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 /// Masked phone + email row shown under the title.
 class _PhoneEmailRow extends StatelessWidget {
   final String identifier;
-  const _PhoneEmailRow({Key? key, required this.identifier}) : super(key: key);
+  const _PhoneEmailRow({required this.identifier});
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +211,7 @@ class _PhoneEmailRow extends StatelessWidget {
         textAlign: TextAlign.center,
         text: TextSpan(children: [
           TextSpan(
-            text: 'we_have_send_the_code'.tr + ' ',
+            text: '${'we_have_send_the_code'.tr} ',
             style: rubikLight.copyWith(
               color: Theme.of(context).textTheme.bodyLarge?.color,
               fontSize: Dimensions.fontSizeLarge,
@@ -236,7 +235,7 @@ class _PhoneEmailRow extends StatelessWidget {
       final parts = id.split('@');
       final name = parts[0];
       final masked = name.length > 3
-          ? name.substring(0, 3) + '***'
+          ? '${name.substring(0, 3)}***'
           : '***';
       return '$masked@${parts[1]}';
     }
@@ -299,7 +298,7 @@ class _MethodBadge extends StatelessWidget {
 /// Sticky verify button at the bottom of the screen.
 class _VerifyButton extends StatelessWidget {
   final VoidCallback onTap;
-  const _VerifyButton({Key? key, required this.onTap}) : super(key: key);
+  const _VerifyButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +308,7 @@ class _VerifyButton extends StatelessWidget {
         color: Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),

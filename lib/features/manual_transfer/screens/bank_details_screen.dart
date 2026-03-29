@@ -12,12 +12,12 @@ class BankDetailsScreen extends StatelessWidget {
   final VoidCallback? onToggleLanguage;
 
   const BankDetailsScreen({
-    Key? key,
+    super.key,
     required this.bank,
     required this.api,
     this.locale = const Locale('en'),
     this.onToggleLanguage,
-  }) : super(key: key);
+  });
 
   AddFundsL10n get l => AddFundsL10n(locale);
 
@@ -89,7 +89,7 @@ class BankDetailsScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1976D2).withOpacity(0.1),
+                    color: const Color(0xFF1976D2).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(Icons.account_balance,
@@ -292,7 +292,7 @@ class BankDetailsScreen extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),

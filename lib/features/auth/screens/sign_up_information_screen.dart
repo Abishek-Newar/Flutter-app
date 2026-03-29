@@ -16,7 +16,7 @@ import 'package:naqde_user/common/widgets/custom_large_widget.dart';
 import 'package:naqde_user/features/auth/widgets/gender_field_widget.dart';
 import 'package:naqde_user/common/widgets/custom_text_field_widget.dart';
 import 'package:naqde_user/common/widgets/text_field_title.dart';
-import 'package:naqde_user/util/styles.dart';
+
 
 class SignUpInformationScreen extends StatefulWidget {
   const SignUpInformationScreen({super.key});

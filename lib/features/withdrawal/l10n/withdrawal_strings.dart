@@ -1,5 +1,6 @@
 /// CircleCash — Withdrawal Feature Bilingual Strings
 /// Merge into assets/language/en.json and ar.json
+library;
 
 class WithdrawalStrings {
   // ── English ──────────────────────────────────────────────────────────────

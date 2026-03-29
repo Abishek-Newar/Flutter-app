@@ -71,7 +71,7 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
               controller: _scroll,
               padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
               itemCount: ctrl.history.length + (ctrl.hasMoreHistory ? 1 : 0),
-              separatorBuilder: (_, __) =>
+              separatorBuilder: (_, _) =>
                   const SizedBox(height: Dimensions.paddingSizeSmall),
               itemBuilder: (ctx, i) {
                 if (i == ctrl.history.length) {
@@ -95,9 +95,9 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
     return ListView.separated(
       padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
       itemCount: 6,
-      separatorBuilder: (_, __) =>
+      separatorBuilder: (_, _) =>
           const SizedBox(height: Dimensions.paddingSizeSmall),
-      itemBuilder: (_, __) => Shimmer.fromColors(
+      itemBuilder: (_, _) => Shimmer.fromColors(
         baseColor: Theme.of(context).dividerColor,
         highlightColor: Theme.of(context).cardColor,
         child: Container(
@@ -164,7 +164,7 @@ class _HistoryCard extends StatelessWidget {
                     horizontal: Dimensions.paddingSizeSmall,
                     vertical: 4),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius:
                       BorderRadius.circular(Dimensions.radiusSizeExtraSmall),
                 ),

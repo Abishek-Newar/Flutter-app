@@ -1,7 +1,6 @@
 import '../domain/models/offline_wallet_models.dart';
 import 'package:flutter/material.dart';
 import '../l10n/offline_wallet_localizations.dart';
-import '../services/offline_transaction_service.dart';
 
 /// CircleCash — Transaction List Widget
 /// Bilingual (Arabic/English), SDG currency, color-coded status badges.
@@ -37,7 +36,7 @@ class TransactionListWidget extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       itemCount: transactions.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      separatorBuilder: (_, _) => const SizedBox(height: 8),
       itemBuilder: (context, i) =>
           _TransactionCard(tx: transactions[i], l: localizations),
     );
@@ -88,7 +87,7 @@ class _TransactionCard extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: _statusColor.withOpacity(0.1),
+                color: _statusColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(_statusIcon, color: _statusColor, size: 22),
@@ -167,8 +166,8 @@ class _StatusChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        border: Border.all(color: color.withOpacity(0.4)),
+        color: color.withValues(alpha: 0.1),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(

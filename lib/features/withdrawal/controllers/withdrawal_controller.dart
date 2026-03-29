@@ -23,7 +23,7 @@ class WithdrawalController extends GetxController {
   List<WithdrawalMethodModel>  _methods  = [];
   WithdrawalMethodModel?       _method;
   WithdrawalLimitsModel?       _limits;
-  List<WithdrawalHistoryItem>  _history  = [];
+  final List<WithdrawalHistoryItem>  _history  = [];
   WithdrawalHistoryItem?       _detail;
 
   double  _amount  = 0.0;
@@ -181,7 +181,7 @@ class WithdrawalController extends GetxController {
     if (_method == null) return false;
     for (final f in _method!.fields) {
       if (f.required &&
-          (fieldCtrl[f.inputName]?.text.trim().isEmpty ?? true)) return false;
+          (fieldCtrl[f.inputName]?.text.trim().isEmpty ?? true)) { return false; }
     }
     return true;
   }

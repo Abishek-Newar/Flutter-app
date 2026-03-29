@@ -103,7 +103,7 @@ class _BluetoothTransferScreenState extends State<BluetoothTransferScreen>
                     height: 120,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(0.15),
+                      color: Colors.white.withValues(alpha: 0.15),
                       border:
                           Border.all(color: Colors.white38, width: 2),
                     ),
@@ -159,7 +159,7 @@ class _BluetoothTransferScreenState extends State<BluetoothTransferScreen>
                       : ListView.separated(
                           padding: const EdgeInsets.all(16),
                           itemCount: _nodes.length,
-                          separatorBuilder: (_, __) =>
+                          separatorBuilder: (_, _) =>
                               const SizedBox(height: 8),
                           itemBuilder: (ctx, i) => _NodeCard(
                             node: _nodes[i],

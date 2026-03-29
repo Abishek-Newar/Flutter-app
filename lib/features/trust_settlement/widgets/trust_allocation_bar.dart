@@ -8,7 +8,7 @@ import '../domain/models/trust_model.dart';
 /// Visual 80:20 allocation bar — mirrors the HTML allocation-chart.
 /// Uses actual ratios from the API, not hardcoded percentages.
 class TrustAllocationBar extends StatelessWidget {
-  const TrustAllocationBar({Key? key}) : super(key: key);
+  const TrustAllocationBar({super.key});
 
   static const _trustGreen  = Color(0xFF059669);
   static const _trustGreen2 = Color(0xFF047857);
@@ -28,7 +28,7 @@ class TrustAllocationBar extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))],
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, 4))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,8 +102,7 @@ class TrustAllocationBar extends StatelessWidget {
 class _Segment extends StatelessWidget {
   final Gradient gradient;
   final String label;
-  const _Segment({Key? key, required this.gradient, required this.label})
-      : super(key: key);
+  const _Segment({required this.gradient, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +118,7 @@ class _Segment extends StatelessWidget {
 class _LegendDot extends StatelessWidget {
   final Color color;
   final String text;
-  const _LegendDot({Key? key, required this.color, required this.text})
-      : super(key: key);
+  const _LegendDot({required this.color, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -170,10 +168,10 @@ class TrustAllocationPreview extends StatelessWidget {
   final double amount;
   final bool isDeposit;
   const TrustAllocationPreview({
-    Key? key,
+    super.key,
     required this.amount,
     required this.isDeposit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -243,14 +241,13 @@ class _PreviewRow extends StatelessWidget {
   final bool     positive, isBold;
 
   const _PreviewRow({
-    Key? key,
     required this.icon,
     required this.color,
     required this.label,
     required this.value,
     required this.positive,
     this.isBold = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

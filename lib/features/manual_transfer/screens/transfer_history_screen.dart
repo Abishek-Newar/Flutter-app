@@ -61,7 +61,7 @@ class _S extends State<TransferHistoryScreen> {
                         child: ListView.separated(
                           padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
                           itemCount: _items.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 8),
+                          separatorBuilder: (_, _) => const SizedBox(height: 8),
                           itemBuilder: (_, i) => _Tile(
                             item: _items[i] as Map<String, dynamic>, ar: ar),
                         )),

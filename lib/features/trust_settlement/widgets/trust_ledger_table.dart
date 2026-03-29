@@ -8,7 +8,7 @@ import '../domain/models/trust_model.dart';
 /// Scrollable ledger table showing recent trust/settlement transactions.
 /// Supports infinite-scroll pagination and filter tabs.
 class TrustLedgerTable extends StatelessWidget {
-  const TrustLedgerTable({Key? key}) : super(key: key);
+  const TrustLedgerTable({super.key});
 
   static const _filters = ['all', 'deposit', 'withdrawal', 'rebalance'];
 
@@ -21,7 +21,7 @@ class TrustLedgerTable extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))],
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, 4))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +69,7 @@ class TrustLedgerTable extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: ctrl.ledgerEntries.length,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       const Divider(height: 1, color: Color(0xFFF3F4F6)),
                   itemBuilder: (_, i) => _LedgerRow(tx: ctrl.ledgerEntries[i]),
                 ),
@@ -108,8 +108,7 @@ class _FilterChip extends StatelessWidget {
   final String label;
   final bool   isActive;
   final VoidCallback onTap;
-  const _FilterChip({Key? key, required this.label, required this.isActive, required this.onTap})
-      : super(key: key);
+  const _FilterChip({required this.label, required this.isActive, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +160,7 @@ class _TableHeader extends StatelessWidget {
 
 class _LedgerRow extends StatelessWidget {
   final TrustTransactionModel tx;
-  const _LedgerRow({Key? key, required this.tx}) : super(key: key);
+  const _LedgerRow({required this.tx});
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +218,7 @@ class _LedgerRow extends StatelessWidget {
 
 class _TypeBadge extends StatelessWidget {
   final LedgerTxType type;
-  const _TypeBadge(this.type, {Key? key}) : super(key: key);
+  const _TypeBadge(this.type);
 
   @override
   Widget build(BuildContext context) {
@@ -250,8 +249,7 @@ class _AccountBadge extends StatelessWidget {
   final String label;
   final double amount;
   final Color  color, bg;
-  const _AccountBadge({Key? key, required this.label, required this.amount, required this.color, required this.bg})
-      : super(key: key);
+  const _AccountBadge({required this.label, required this.amount, required this.color, required this.bg});
 
   @override
   Widget build(BuildContext context) {
@@ -294,8 +292,8 @@ class _LoadingPlaceholder extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 5,
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (_, __) => Padding(
+      separatorBuilder: (_, _) => const Divider(height: 1),
+      itemBuilder: (_, _) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: List.generate(5, (i) => Expanded(

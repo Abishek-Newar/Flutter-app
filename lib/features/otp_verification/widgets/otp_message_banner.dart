@@ -7,7 +7,7 @@ import '../controllers/otp_verification_controller.dart';
 /// Animated success/error message banner shown above the form.
 /// Auto-hides after 5 seconds (controlled by [OtpVerificationController]).
 class OtpMessageBanner extends StatelessWidget {
-  const OtpMessageBanner({Key? key}) : super(key: key);
+  const OtpMessageBanner({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +33,10 @@ class _MessageBox extends StatelessWidget {
   final bool isSuccess;
 
   const _MessageBox({
-    Key? key,
+    super.key,
     required this.text,
     required this.isSuccess,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 // ─────────────────────────────────────────────────────────────────────────────
 // SDG Currency Helper
 // ─────────────────────────────────────────────────────────────────────────────
@@ -89,7 +87,7 @@ extension KycTierLimits on KycTier {
 // ─────────────────────────────────────────────────────────────────────────────
 enum WithdrawalStatus {
   pending,
-  under_review,
+  underReview,
   approved,
   processing,
   completed,
@@ -101,7 +99,7 @@ extension WithdrawalStatusLabel on WithdrawalStatus {
   String get labelKey {
     switch (this) {
       case WithdrawalStatus.pending:      return 'status_pending';
-      case WithdrawalStatus.under_review: return 'status_under_review';
+      case WithdrawalStatus.underReview: return 'status_underReview';
       case WithdrawalStatus.approved:     return 'status_approved';
       case WithdrawalStatus.processing:   return 'status_processing';
       case WithdrawalStatus.completed:    return 'status_completed';
@@ -259,7 +257,7 @@ class WithdrawalHistoryItem {
   factory WithdrawalHistoryItem.fromJson(Map<String, dynamic> json) {
     final statusMap = {
       'pending':      WithdrawalStatus.pending,
-      'under_review': WithdrawalStatus.under_review,
+      'underReview': WithdrawalStatus.underReview,
       'approved':     WithdrawalStatus.approved,
       'processing':   WithdrawalStatus.processing,
       'completed':    WithdrawalStatus.completed,

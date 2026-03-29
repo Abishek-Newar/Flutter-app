@@ -3,6 +3,7 @@
 ///
 /// Add these keys to your lang/en.json and lang/ar.json (or language maps).
 /// They follow the same naming convention already in the app (snake_case).
+library;
 
 class OtpStrings {
   // ── English ──────────────────────────────────────────────────────────────

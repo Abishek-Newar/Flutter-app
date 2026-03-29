@@ -12,10 +12,10 @@ class OtpTimerSection extends StatelessWidget {
   final bool isForgetPassword;
 
   const OtpTimerSection({
-    Key? key,
+    super.key,
     required this.identifier,
     this.isForgetPassword = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -110,11 +110,10 @@ class _PulsingText extends StatefulWidget {
   final Color color;
 
   const _PulsingText({
-    Key? key,
     required this.text,
     required this.isPulsing,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   State<_PulsingText> createState() => _PulsingTextState();

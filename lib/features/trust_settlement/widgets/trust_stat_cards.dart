@@ -8,13 +8,12 @@ import '../domain/models/trust_model.dart';
 /// Row of three stat cards: Trust (80%) | Settlement (20%) | Total
 /// Mirrors the HTML stat-grid. Uses shimmer while loading.
 class TrustStatCards extends StatelessWidget {
-  const TrustStatCards({Key? key}) : super(key: key);
+  const TrustStatCards({super.key});
 
   static const _trustGreen      = Color(0xFF059669);
   static const _trustGreenLight = Color(0xFFD1FAE5);
   static const _settlePurple     = Color(0xFF7C3AED);
   static const _settlePurpleLight = Color(0xFFEDE9FE);
-  static const _primary          = Color(0xFF1A2A6C);
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +103,6 @@ class _StatCard extends StatelessWidget {
   final bool     statusOk;
 
   const _StatCard({
-    Key? key,
     required IconData icon,
     required this.iconBg,
     required this.iconColor,
@@ -117,8 +115,7 @@ class _StatCard extends StatelessWidget {
     required this.progressColor,
     required this.statusText,
     required this.statusOk,
-  })  : iconData = icon,
-        super(key: key);
+  })  : iconData = icon;
 
   @override
   Widget build(BuildContext context) {
@@ -127,8 +124,8 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: progressColor.withOpacity(0.4), width: 1.5),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))],
+        border: Border.all(color: progressColor.withValues(alpha: 0.4), width: 1.5),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +192,7 @@ class _StatCard extends StatelessWidget {
 
 class _TotalCard extends StatelessWidget {
   final TrustBalanceModel balance;
-  const _TotalCard({Key? key, required this.balance}) : super(key: key);
+  const _TotalCard({required this.balance});
 
   @override
   Widget build(BuildContext context) {
@@ -209,14 +206,14 @@ class _TotalCard extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: const Color(0xFF1A2A6C).withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6))],
+        boxShadow: [BoxShadow(color: const Color(0xFF1A2A6C).withValues(alpha: 0.3), blurRadius: 16, offset: const Offset(0, 6))],
       ),
       child: Row(
         children: [
           Container(
             width: 50, height: 50,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.account_balance_rounded, color: Colors.white, size: 26),
@@ -240,7 +237,7 @@ class _TotalCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text('total_badge'.tr,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:naqde_user/data/api/api_client.dart';
 import 'package:naqde_user/helper/custom_snackbar_helper.dart';

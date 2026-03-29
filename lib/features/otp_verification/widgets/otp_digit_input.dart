@@ -17,10 +17,10 @@ class OtpDigitInput extends StatefulWidget {
   final void Function()? onChanged;
 
   const OtpDigitInput({
-    Key? key,
+    super.key,
     required this.onCompleted,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<OtpDigitInput> createState() => OtpDigitInputState();
@@ -36,8 +36,8 @@ class OtpDigitInputState extends State<OtpDigitInput> {
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final n in _nodes) n.dispose();
+    for (final c in _controllers) { c.dispose(); }
+    for (final n in _nodes) { n.dispose(); }
     super.dispose();
   }
 
@@ -65,8 +65,8 @@ class OtpDigitInputState extends State<OtpDigitInput> {
     setState(() {});
   }
 
-  void _onKeyDown(int index, RawKeyEvent event) {
-    if (event is RawKeyDownEvent &&
+  void _onKeyDown(int index, KeyEvent event) {
+    if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.backspace &&
         _controllers[index].text.isEmpty &&
         index > 0) {
@@ -96,7 +96,7 @@ class OtpDigitInputState extends State<OtpDigitInput> {
   }
 
   void clearAll() {
-    for (final c in _controllers) c.clear();
+    for (final c in _controllers) { c.clear(); }
     _nodes[0].requestFocus();
     Get.find<OtpVerificationController>().clearOtp();
     setState(() {});
@@ -135,10 +135,9 @@ class _OtpBox extends StatelessWidget {
   final bool isFilled;
   final Color primary;
   final void Function(String) onInput;
-  final void Function(RawKeyEvent) onKeyDown;
+  final void Function(KeyEvent) onKeyDown;
 
   const _OtpBox({
-    Key? key,
     required this.controller,
     required this.focusNode,
     required this.index,
@@ -146,7 +145,7 @@ class _OtpBox extends StatelessWidget {
     required this.primary,
     required this.onInput,
     required this.onKeyDown,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -155,9 +154,9 @@ class _OtpBox extends StatelessWidget {
       child: SizedBox(
         width: 46,
         height: 58,
-        child: RawKeyboardListener(
+        child: KeyboardListener(
           focusNode: FocusNode(),
-          onKey: onKeyDown,
+          onKeyEvent: onKeyDown,
           child: TextField(
             controller: controller,
             focusNode: focusNode,
@@ -174,7 +173,7 @@ class _OtpBox extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               filled: true,
               fillColor: isFilled
-                  ? primary.withOpacity(0.07)
+                  ? primary.withValues(alpha: 0.07)
                   : Theme.of(context).cardColor,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),

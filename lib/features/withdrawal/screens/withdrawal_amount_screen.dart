@@ -48,7 +48,7 @@ class _WithdrawalAmountScreenState extends State<WithdrawalAmountScreen> {
                       gradient: LinearGradient(
                         colors: [
                           Theme.of(context).primaryColor,
-                          Theme.of(context).primaryColor.withOpacity(0.75),
+                          Theme.of(context).primaryColor.withValues(alpha: 0.75),
                         ],
                         begin: isAr ? Alignment.centerRight : Alignment.centerLeft,
                         end:   isAr ? Alignment.centerLeft  : Alignment.centerRight,
@@ -259,7 +259,7 @@ class _LimitChip extends StatelessWidget {
           horizontal: Dimensions.paddingSizeSmall,
           vertical: Dimensions.paddingSizeExtraSmall),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.08),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(Dimensions.radiusSizeExtraSmall),
       ),
       child: Column(
@@ -331,7 +331,7 @@ class _MethodTile extends StatelessWidget {
         padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
         decoration: BoxDecoration(
           color: isSelected
-              ? Theme.of(context).primaryColor.withOpacity(0.08)
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.08)
               : Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(Dimensions.radiusSizeSmall),
           border: Border.all(

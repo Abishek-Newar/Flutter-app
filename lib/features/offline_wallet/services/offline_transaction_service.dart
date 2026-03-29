@@ -85,10 +85,12 @@ class OfflineTransactionService {
     String? smsRecipientPhone,
   }) async {
     if (!_initialized) return TransactionResult.failure('Wallet not initialized');
-    if (recipientWalletId.trim() == _walletId)
+    if (recipientWalletId.trim() == _walletId) {
       return TransactionResult.failure('Cannot send to your own wallet');
-    if (amount <= 0 || amount > _offlineBalance)
+    }
+    if (amount <= 0 || amount > _offlineBalance) {
       return TransactionResult.failure('Insufficient offline balance');
+    }
 
     final method = useBluetooth ? TransmissionMethod.bluetooth
         : useNFC ? TransmissionMethod.nfc
@@ -123,7 +125,7 @@ class OfflineTransactionService {
       final pending = await _getPendingTransactions();
       if (pending.isEmpty) { _syncStatusCtrl.add(SyncStatus.completed); return; }
       await Future.delayed(const Duration(milliseconds: 600));
-      for (final tx in pending) await _markSynced(tx.id);
+      for (final tx in pending) { await _markSynced(tx.id); }
       _syncStatusCtrl.add(SyncStatus.completed);
     } catch (_) {
       _syncStatusCtrl.add(SyncStatus.failed);

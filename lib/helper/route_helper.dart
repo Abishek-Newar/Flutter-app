@@ -16,7 +16,6 @@ import 'package:naqde_user/features/history/screens/history_screen.dart';
 import 'package:naqde_user/features/home/screens/home_screen.dart';
 import 'package:naqde_user/features/language/screens/change_language_screen.dart';
 import 'package:naqde_user/features/notification/screens/notification_screen.dart';
-import 'package:naqde_user/features/onboarding/screens/on_boarding_sceen.dart';
 import 'package:naqde_user/features/setting/screens/profile_screen.dart';
 import 'package:naqde_user/features/setting/widgets/change_pin_screen.dart';
 import 'package:naqde_user/features/setting/screens/edit_profile_screen.dart';
