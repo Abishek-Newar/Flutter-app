@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/abish/Downloads/naqdi_production_final/assets -name *.json)"
+    ]
+  }
+}

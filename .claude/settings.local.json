@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze:*)",
+      "Bash(grep -r \"NDEFRecord\\\\|NdefRecord\\\\|ndef\" /c/Users/abish/Downloads/naqdi_production_final/lib --include=*.dart -l)",
+      "Bash(grep -r \"NDEFRecord\\\\|NdefRecord\\\\|writeNDEFRecords\" /c/Users/abish/Downloads/naqdi_production_final/.dart_tool --include=*.dart)",
+      "Bash(find /c/Users/abish/Downloads/naqdi_production_final -path */flutter_nfc_kit/*.dart)",
+      "Bash(find /c/Users/abish/Downloads/naqdi_production_final -path *flutter_nfc_kit* -name *.dart)",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Read(//c/Program Files/**)",
+      "Read(//c//**)",
+      "Bash(where java:*)",
+      "Bash(flutter clean:*)"
+    ]
+  }
+}
