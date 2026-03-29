@@ -1,8 +1,7 @@
 // submit_transfer_screen.dart
-// FIELD NAME: "Transaction Number" (not "Reference Number").
-// Posts to /api/v1/manual-transfer/submit with field "transaction_number".
-// SDG currency, bilingual EN/AR, full backend connectivity.
-
+// Two-step flow:
+//   1. POST /add-money/initiate  → { bank, amount, sender_name, sender_account }
+//   2. POST /add-money/upload-receipt (multipart) → { reference, receipt }
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,19 +19,30 @@ import 'package:naqde_user/util/dimensions.dart';
 import 'package:naqde_user/util/styles.dart';
 
 class SubmitTransferScreen extends StatefulWidget {
-  const SubmitTransferScreen({super.key});
-  @override State<SubmitTransferScreen> createState() => _S();
+  final Map<String, dynamic> bank;
+  const SubmitTransferScreen({super.key, required this.bank});
+
+  @override
+  State<SubmitTransferScreen> createState() => _S();
 }
 
 class _S extends State<SubmitTransferScreen> {
-  final _form   = GlobalKey<FormState>();
-  final _amount = TextEditingController();
-  final _txNo   = TextEditingController();   // transaction_number field
-  File?  _receipt;
-  bool   _busy = false;
+  final _form        = GlobalKey<FormState>();
+  final _amount      = TextEditingController();
+  final _senderName  = TextEditingController();
+  final _senderAcct  = TextEditingController();
+  File? _receipt;
+  bool  _busy = false;
 
   @override
-  void dispose() { _amount.dispose(); _txNo.dispose(); super.dispose(); }
+  void dispose() {
+    _amount.dispose();
+    _senderName.dispose();
+    _senderAcct.dispose();
+    super.dispose();
+  }
+
+  String get _bankName => widget.bank['bank_name']?.toString() ?? '';
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +60,26 @@ class _S extends State<SubmitTransferScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-                // ── Amount ─────────────────────────────────────────────
+                // ── Selected bank (read-only) ──────────────────────────────
+                _Lbl(ar ? 'البنك المحدد' : 'Selected Bank'),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300)),
+                  child: Row(children: [
+                    Icon(Icons.account_balance,
+                      size: 18, color: Theme.of(context).primaryColor),
+                    const SizedBox(width: 8),
+                    Text(_bankName, style: rubikMedium.copyWith(fontSize: 14)),
+                  ]),
+                ),
+
+                const SizedBox(height: 18),
+
+                // ── Amount ────────────────────────────────────────────────
                 _Lbl(ar ? 'المبلغ المحوَّل (ج.س)' : 'Transferred Amount (SDG)'),
                 const SizedBox(height: 8),
                 TextFormField(
@@ -63,43 +92,57 @@ class _S extends State<SubmitTransferScreen> {
                   validator: (v) {
                     if (v == null || v.isEmpty) return ar ? 'أدخل المبلغ' : 'Enter amount';
                     final n = double.tryParse(v);
-                    if (n == null || n < 5000) return ar ? 'الحد الأدنى ج.س 5,000' : 'Min SDG 5,000';
-                    if (n > 500000) return ar ? 'الحد الأقصى ج.س 500,000' : 'Max SDG 500,000';
+                    if (n == null || n <= 0) return ar ? 'مبلغ غير صالح' : 'Invalid amount';
                     return null;
                   },
                 ),
 
                 const SizedBox(height: 18),
 
-                // ── Transaction Number (NOT "Reference Number") ─────────
-                _Lbl(ar ? 'رقم المعاملة (Transaction Number)' : 'Transaction Number'),
+                // ── Sender name ───────────────────────────────────────────
+                _Lbl(ar ? 'اسم المرسل' : 'Sender Name'),
                 const SizedBox(height: 8),
                 TextFormField(
-                  controller: _txNo,
+                  controller: _senderName,
+                  textCapitalization: TextCapitalization.words,
                   decoration: _dec(context,
-                    hint: ar
-                        ? 'رقم المعاملة من تطبيق بنكك'
-                        : 'Transaction number from Bankak app',
-                    icon: Icons.receipt_long),
-                  validator: (v) => v == null || v.isEmpty
-                      ? (ar ? 'رقم المعاملة مطلوب' : 'Transaction number required')
+                    hint: ar ? 'الاسم كما يظهر في البنك' : 'Name as shown in your bank',
+                    icon: Icons.person_outline),
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? (ar ? 'اسم المرسل مطلوب' : 'Sender name required')
                       : null,
                 ),
 
                 const SizedBox(height: 18),
 
-                // ── Receipt (optional) ──────────────────────────────────
-                _Lbl(ar ? 'صورة الإيصال (اختياري)' : 'Receipt Screenshot (Optional)'),
+                // ── Sender account ─────────────────────────────────────────
+                _Lbl(ar ? 'رقم حساب المرسل' : 'Sender Account Number'),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _senderAcct,
+                  keyboardType: TextInputType.number,
+                  decoration: _dec(context,
+                    hint: ar ? 'رقم الحساب الذي حوّلت منه' : 'Account you transferred from',
+                    icon: Icons.credit_card),
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? (ar ? 'رقم الحساب مطلوب' : 'Account number required')
+                      : null,
+                ),
+
+                const SizedBox(height: 18),
+
+                // ── Receipt upload ─────────────────────────────────────────
+                _Lbl(ar ? 'إيصال التحويل' : 'Transfer Receipt'),
                 const SizedBox(height: 8),
                 GestureDetector(
-                  onTap: _pick,
+                  onTap: _pickReceipt,
                   child: Container(
-                    height: 100, width: double.infinity,
+                    height: 110, width: double.infinity,
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                          color: Theme.of(context).primaryColor.withValues(alpha: .3))),
+                        color: Theme.of(context).primaryColor.withValues(alpha: .3))),
                     child: _receipt != null
                         ? ClipRRect(borderRadius: BorderRadius.circular(10),
                             child: Image.file(_receipt!, fit: BoxFit.cover))
@@ -110,13 +153,17 @@ class _S extends State<SubmitTransferScreen> {
                             Text(ar ? 'اضغط لرفع الإيصال' : 'Tap to upload receipt',
                               style: rubikRegular.copyWith(
                                 color: Theme.of(context).hintColor, fontSize: 12)),
+                            const SizedBox(height: 2),
+                            Text(ar ? 'jpg/png/pdf — 5MB كحد أقصى' : 'jpg/png/pdf — max 5 MB',
+                              style: rubikRegular.copyWith(
+                                color: Colors.grey.shade400, fontSize: 11)),
                           ]),
                   ),
                 ),
 
                 const SizedBox(height: 16),
 
-                // ── Notice ─────────────────────────────────────────────
+                // ── Notice ────────────────────────────────────────────────
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -129,13 +176,14 @@ class _S extends State<SubmitTransferScreen> {
                     Expanded(child: Text(
                       ar ? 'سيتم التحقق خلال 24 ساعة. لن يُضاف رصيد دون التحقق.'
                          : 'We will verify within 24 hours and credit your balance.',
-                      style: rubikRegular.copyWith(fontSize: 11, color: Colors.amber.shade900))),
+                      style: rubikRegular.copyWith(
+                        fontSize: 11, color: Colors.amber.shade900))),
                   ]),
                 ),
               ]),
             )),
 
-            // ── Submit ─────────────────────────────────────────────────
+            // ── Submit ───────────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               child: SizedBox(width: double.infinity, height: 52,
@@ -161,46 +209,70 @@ class _S extends State<SubmitTransferScreen> {
         borderSide: BorderSide(color: Colors.grey.shade300)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14));
 
-  Future<void> _pick() async {
-    final p = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 70);
-    if (p != null) setState(() => _receipt = File(p.path));
+  Future<void> _pickReceipt() async {
+    final p = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (p != null && mounted) setState(() => _receipt = File(p.path));
   }
 
   Future<void> _submit(bool ar) async {
     if (!_form.currentState!.validate()) return;
     setState(() => _busy = true);
+
     try {
-      final resp = await Get.find<ApiClient>().postData(
-        AppConstants.manualTransferSubmitUri,
+      // Step 1 — initiate transfer
+      final initResp = await Get.find<ApiClient>().postData(
+        AppConstants.addMoneyInitiateUri,
         {
-          'amount':             _amount.text.trim(),
-          'transaction_number': _txNo.text.trim(),  // ← correct field name
-          'bank':               'bankak',
+          'bank':           _bankName,
+          'amount':         double.parse(_amount.text.trim()),
+          'sender_name':    _senderName.text.trim(),
+          'sender_account': _senderAcct.text.trim(),
         },
       );
-      final ok = resp.statusCode == 200 || resp.statusCode == 201;
-      if (ok) {
-        Get.find<ProfileController>().getProfileData(reload: true);
-        if (mounted) {
-          DialogHelper.showAnimatedDialog(
-            Get.context!,
-            CustomDialogWidget(
-              icon: Icons.check_circle,
-              title: ar ? 'تم إرسال الطلب' : 'Request Submitted',
-              description: ar
-                  ? 'سنتحقق من التحويل خلال 24 ساعة وسيتم إضافة الرصيد تلقائياً.'
-                  : 'We will verify within 24 hours and credit your wallet automatically.',
-              isSingleButton: true,
-              onTapFalseText: 'okay'.tr,
-              onTapFalse: () { Get.back(); Get.back(); Get.back(); }),
-            dismissible: false, isFlip: true);
-        }
-      } else {
-        final msg = resp.body is Map ? (resp.body['message'] ?? '') : '';
+
+      final initOk = initResp.statusCode == 200 || initResp.statusCode == 201;
+      if (!initOk) {
+        final msg = initResp.body is Map ? (initResp.body['message'] ?? '') : '';
         showCustomSnackBarHelper(
           msg.toString().isNotEmpty
-              ? msg : (ar ? 'فشل الإرسال. حاول مرة أخرى.' : 'Submission failed. Please try again.'),
+              ? msg : (ar ? 'فشل بدء الطلب. حاول مرة أخرى.' : 'Failed to initiate. Please try again.'),
           isError: true);
+        return;
+      }
+
+      final reference = (initResp.body['data']?['reference'] ??
+                         initResp.body['reference'])?.toString() ?? '';
+
+      // Step 2 — upload receipt (if provided)
+      if (_receipt != null && reference.isNotEmpty) {
+        final uploadResp = await Get.find<ApiClient>().postMultipartData(
+          AppConstants.addMoneyReceiptUri,
+          {'reference': reference},
+          [MultipartBody('receipt', _receipt!)],
+        );
+        if (uploadResp.statusCode != 200 && uploadResp.statusCode != 201) {
+          // Non-fatal: initiation succeeded, receipt upload failed
+          showCustomSnackBarHelper(
+            ar ? 'تم إرسال الطلب لكن فشل رفع الإيصال. يمكنك إعادة المحاولة لاحقاً.'
+               : 'Request sent but receipt upload failed. You can retry later.',
+            isError: false);
+        }
+      }
+
+      Get.find<ProfileController>().getProfileData(reload: true);
+      if (mounted) {
+        DialogHelper.showAnimatedDialog(
+          Get.context!,
+          CustomDialogWidget(
+            icon: Icons.check_circle,
+            title: ar ? 'تم إرسال الطلب' : 'Request Submitted',
+            description: ar
+                ? 'سنتحقق من التحويل خلال 24 ساعة وسيتم إضافة الرصيد تلقائياً.'
+                : 'We will verify within 24 hours and credit your wallet automatically.',
+            isSingleButton: true,
+            onTapFalseText: 'okay'.tr,
+            onTapFalse: () { Get.back(); Get.back(); Get.back(); }),
+          dismissible: false, isFlip: true);
       }
     } catch (_) {
       showCustomSnackBarHelper(
@@ -213,7 +285,8 @@ class _S extends State<SubmitTransferScreen> {
 }
 
 class _Lbl extends StatelessWidget {
-  final String t; const _Lbl(this.t);
+  final String t;
+  const _Lbl(this.t);
   @override
   Widget build(BuildContext context) =>
     Text(t, style: rubikMedium.copyWith(fontSize: Dimensions.fontSizeDefault));

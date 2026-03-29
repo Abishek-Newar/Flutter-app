@@ -19,7 +19,45 @@ extension ReferralCodeTypeExt on ReferralCodeType {
   }
 }
 
-/// Data returned by POST /api/referral/validate
+/// Response from GET /api/v1/referral/my-code
+/// Returns the user's own referral code + share link + bonus amounts + stats.
+class MyCodeResponse {
+  final String code;
+  final String shareLink;
+  final double referrerBonus;  // 500 SDG for referrer
+  final double referredBonus;  // 200 SDG for new user
+  final int totalReferrals;
+  final int qualified;
+  final int rewarded;
+  final double totalEarnedSdg;
+
+  MyCodeResponse({
+    required this.code,
+    required this.shareLink,
+    required this.referrerBonus,
+    required this.referredBonus,
+    required this.totalReferrals,
+    required this.qualified,
+    required this.rewarded,
+    required this.totalEarnedSdg,
+  });
+
+  factory MyCodeResponse.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] ?? json;
+    return MyCodeResponse(
+      code:           data['code']?.toString() ?? '',
+      shareLink:      data['share_link']?.toString() ?? '',
+      referrerBonus:  (data['referrer_bonus'] as num?)?.toDouble() ?? 500,
+      referredBonus:  (data['referred_bonus'] as num?)?.toDouble() ?? 200,
+      totalReferrals: (data['total_referrals'] as num?)?.toInt() ?? 0,
+      qualified:      (data['qualified'] as num?)?.toInt() ?? 0,
+      rewarded:       (data['rewarded'] as num?)?.toInt() ?? 0,
+      totalEarnedSdg: (data['total_earned_sdg'] as num?)?.toDouble() ?? 0,
+    );
+  }
+}
+
+/// Data returned by POST /api/referral/validate (kept for UI use)
 class ReferralCodeModel {
   final String code;
   final ReferralCodeType type;

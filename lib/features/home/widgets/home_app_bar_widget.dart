@@ -157,7 +157,7 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   const SizedBox(width: Dimensions.paddingSizeSmall),
 
                   Flexible(
-                    child: Get.find<SplashController>().configModel!.themeIndex == 1
+                    child: (Get.find<SplashController>().configModel?.themeIndex ?? 1) == 1
                       ? const UserNameWidget()
                       :  _BalanceWidget(profileController, availableBalanceKey),
                   ),

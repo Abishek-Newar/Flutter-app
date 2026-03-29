@@ -215,7 +215,11 @@ class BankakTransferScreen extends StatelessWidget {
                 buttonText: 'confirm_payment'.tr.isEmpty
                     ? (isAr ? 'تأكيد الدفع' : 'Confirm Payment')
                     : 'confirm_payment'.tr,
-                onTap: () => Get.to(() => const SubmitTransferScreen()),
+                onTap: () => Get.to(() => SubmitTransferScreen(bank: {
+                  'bank_name': isAr ? _bankNameAr : _bankNameEn,
+                  'account_number': _accountNumber,
+                  'account_holder': _accountHolder,
+                })),
                 borderRadius: 10,
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:naqde_user/common/widgets/custom_app_bar_widget.dart';
 import 'package:naqde_user/common/widgets/custom_large_widget.dart';
@@ -8,7 +9,6 @@ import 'package:naqde_user/util/dimensions.dart';
 import 'package:naqde_user/util/styles.dart';
 import '../controllers/referral_controller.dart';
 import '../widgets/referral_benefits_card.dart';
-import '../widgets/referral_code_info_panel.dart';
 import '../widgets/referral_message_banner.dart';
 import '../widgets/referral_stats_row.dart';
 import '../widgets/referral_terms_section.dart';
@@ -47,10 +47,9 @@ class _ReferralScreenState extends State<ReferralScreen> {
   @override
   void initState() {
     super.initState();
-    // Load global stats without blocking the UI
-    Get.find<ReferralController>().loadStats();
-    // Reset any leftover state from a previous session
     Get.find<ReferralController>().reset();
+    Get.find<ReferralController>().loadMyCode();
+    Get.find<ReferralController>().loadStats();
   }
 
   @override
@@ -138,12 +137,13 @@ class _ReferralScreenState extends State<ReferralScreen> {
                   const CustomLogoWidget(height: 64, width: 64),
                   const SizedBox(height: Dimensions.paddingSizeSmall),
 
+                  // Your own referral code card (from /referral/my-code)
+                  const _MyCodeCard(),
+                  const SizedBox(height: Dimensions.paddingSizeLarge),
+
                   // Benefits card
                   const ReferralBenefitsCard(),
                   const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                  // Code info panel (animated, shown when code is valid)
-                  const ReferralCodeInfoPanel(),
 
                   // Message banner
                   const ReferralMessageBanner(),
@@ -180,7 +180,106 @@ class _ReferralScreenState extends State<ReferralScreen> {
 
 // ─── Supporting Widgets ────────────────────────────────────────────────────────
 
-/// Referral code text field with real-time validation indicator
+/// Your own referral code card — loaded from GET /referral/my-code
+class _MyCodeCard extends StatelessWidget {
+  const _MyCodeCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<ReferralController>(builder: (ctrl) {
+      if (ctrl.loadingMyCode) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      final code = ctrl.myCode;
+      if (code == null) return const SizedBox.shrink();
+
+      return Container(
+        padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.07),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.25)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('your_referral_code'.tr,
+            style: rubikSemiBold.copyWith(fontSize: Dimensions.fontSizeDefault)),
+          const SizedBox(height: 10),
+          Row(children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                ),
+                child: Text(code.code,
+                  style: rubikSemiBold.copyWith(
+                    fontSize: 22, letterSpacing: 3,
+                    color: Theme.of(context).primaryColor)),
+              ),
+            ),
+            const SizedBox(width: 10),
+            ElevatedButton.icon(
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: code.code));
+                Get.snackbar('', Get.locale?.languageCode == 'ar'
+                    ? 'تم نسخ الكود!' : 'Code copied!',
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.green.shade600,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 2),
+                  margin: const EdgeInsets.all(12));
+              },
+              icon: const Icon(Icons.copy, size: 16),
+              label: Text('copy'.tr, style: rubikMedium.copyWith(fontSize: 12)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12)),
+            ),
+          ]),
+          const SizedBox(height: 10),
+          Row(children: [
+            _StatChip(Icons.people_outline, '${code.totalReferrals}', 'referrals'.tr),
+            const SizedBox(width: 8),
+            _StatChip(Icons.verified_outlined, '${code.rewarded}', 'rewarded'.tr),
+            const SizedBox(width: 8),
+            _StatChip(Icons.attach_money, '${code.totalEarnedSdg.toStringAsFixed(0)}', 'earned'.tr),
+          ]),
+        ]),
+      );
+    });
+  }
+}
+
+class _StatChip extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+  const _StatChip(this.icon, this.value, this.label);
+
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200)),
+      child: Column(children: [
+        Icon(icon, size: 14, color: Theme.of(context).primaryColor),
+        const SizedBox(height: 2),
+        Text(value, style: rubikSemiBold.copyWith(fontSize: 13)),
+        Text(label, style: rubikRegular.copyWith(fontSize: 9, color: Colors.grey),
+          textAlign: TextAlign.center),
+      ]),
+    ),
+  );
+}
+
+/// Referral code text field — enter a friend's code
 class _CodeInputField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -197,26 +296,22 @@ class _CodeInputField extends StatelessWidget {
 
     return GetBuilder<ReferralController>(
       builder: (ctrl) {
-        final isValid   = ctrl.hasValidCode;
-        final isLoading = ctrl.isValidating;
+        final isValid = ctrl.hasValidCode;
 
-        Color borderColor;
-        Color fillColor;
-        if (isValid) {
-          borderColor = const Color(0xFF10B981);
-          fillColor   = const Color(0xFFECFDF5);
-        } else if (ctrl.showError) {
-          borderColor = const Color(0xFFEF4444);
-          fillColor   = const Color(0xFFFEF2F2);
-        } else {
-          borderColor = const Color(0xFFE5E7EB);
-          fillColor   = const Color(0xFFF9FAFB);
-        }
+        final borderColor = isValid
+            ? const Color(0xFF10B981)
+            : ctrl.showError
+                ? const Color(0xFFEF4444)
+                : const Color(0xFFE5E7EB);
+        final fillColor = isValid
+            ? const Color(0xFFECFDF5)
+            : ctrl.showError
+                ? const Color(0xFFFEF2F2)
+                : const Color(0xFFF9FAFB);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Label
             Text(
               'referral_code_label'.tr,
               style: rubikSemiBold.copyWith(
@@ -225,8 +320,6 @@ class _CodeInputField extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-
-            // Input row
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
@@ -234,77 +327,59 @@ class _CodeInputField extends StatelessWidget {
                 border: Border.all(color: borderColor, width: 2),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Icon(Icons.confirmation_number_outlined,
-                        color: isValid ? const Color(0xFF10B981) : Colors.grey.shade500,
-                        size: 20),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      textCapitalization: TextCapitalization.characters,
-                      style: rubikSemiBold.copyWith(
-                        fontSize: Dimensions.fontSizeLarge,
-                        letterSpacing: 1.5,
-                        color: primary,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'referral_code_hint'.tr,
-                        hintStyle: rubikRegular.copyWith(
-                          color: Colors.grey.shade400,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w400,
-                          fontSize: Dimensions.fontSizeDefault,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16, horizontal: 0),
-                      ),
-                      maxLength: 10,
-                      buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,
-                      onChanged: (v) => ctrl.onCodeChanged(v),
-                      onSubmitted: (_) => ctrl.isApplied
-                          ? null
-                          : Get.find<ReferralController>().applyCode(controller.text),
+              child: Row(children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Icon(Icons.confirmation_number_outlined,
+                    color: isValid ? const Color(0xFF10B981) : Colors.grey.shade500,
+                    size: 20),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    textCapitalization: TextCapitalization.characters,
+                    style: rubikSemiBold.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      letterSpacing: 1.5,
+                      color: primary,
                     ),
-                  ),
-                  // Loading / valid indicator
-                  Padding(
-                    padding: const EdgeInsets.only(right: 14),
-                    child: isLoading
-                        ? SizedBox(
-                            width: 18, height: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2, color: primary))
-                        : isValid
-                            ? const Icon(Icons.check_circle,
-                                color: Color(0xFF10B981), size: 20)
-                            : const SizedBox.shrink(),
-                  ),
-                ],
-              ),
-            ),
-
-            // Hint text
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.info_outline,
-                    color: Colors.grey.shade500, size: 14),
-                const SizedBox(width: 6),
-                Text(
-                  'referral_code_input_hint'.tr,
-                  style: rubikRegular.copyWith(
-                    fontSize: 12.5,
-                    color: Colors.grey.shade500,
+                    decoration: InputDecoration(
+                      hintText: 'referral_code_hint'.tr,
+                      hintStyle: rubikRegular.copyWith(
+                        color: Colors.grey.shade400,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.w400,
+                        fontSize: Dimensions.fontSizeDefault,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 0),
+                    ),
+                    maxLength: 10,
+                    buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,
+                    onChanged: ctrl.onCodeChanged,
+                    onSubmitted: (_) {
+                      if (!ctrl.isApplied) ctrl.applyCode(controller.text);
+                    },
                   ),
                 ),
-              ],
+                if (isValid)
+                  const Padding(
+                    padding: EdgeInsets.only(right: 14),
+                    child: Icon(Icons.check_circle,
+                      color: Color(0xFF10B981), size: 20),
+                  ),
+              ]),
             ),
+            const SizedBox(height: 8),
+            Row(children: [
+              Icon(Icons.info_outline, color: Colors.grey.shade500, size: 14),
+              const SizedBox(width: 6),
+              Text('referral_code_input_hint'.tr,
+                style: rubikRegular.copyWith(
+                  fontSize: 12.5, color: Colors.grey.shade500)),
+            ]),
           ],
         );
       },
@@ -339,7 +414,7 @@ class _BottomActions extends StatelessWidget {
       ),
       child: GetBuilder<ReferralController>(
         builder: (ctrl) {
-          final canApply = ctrl.hasValidCode && !ctrl.isApplied && !ctrl.isApplying;
+          final canApply = ctrl.hasValidCode && !ctrl.isApplied && !ctrl.isApplying && ctrl.termsAccepted;
 
           return Column(
             mainAxisSize: MainAxisSize.min,

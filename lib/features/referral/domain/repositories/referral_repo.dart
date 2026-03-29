@@ -2,35 +2,30 @@ import 'package:get/get.dart';
 import 'package:naqde_user/data/api/api_client.dart';
 import 'package:naqde_user/util/app_constants.dart';
 
-/// Referral API repository.
-/// Follows the exact same pattern as AuthRepo, AddMoneyRepo, etc.
-/// Register in get_di.dart:
-///   Get.lazyPut(() => ReferralRepo(apiClient: Get.find()));
 class ReferralRepo extends GetxService {
   final ApiClient apiClient;
   ReferralRepo({required this.apiClient});
 
-  /// Validate a referral code — returns code details if valid.
-  /// POST /api/v1/referral/validate
-  Future<Response> validateCode(String code) async {
-    return apiClient.postData(
-      AppConstants.referralValidateUri,
-      {'code': code.toUpperCase().trim()},
-    );
-  }
+  /// GET /api/v1/referral/my-code
+  /// Gets or creates the user's own referral code + share link + bonus amounts + stats.
+  Future<Response> getMyCode() =>
+      apiClient.getData(AppConstants.referralMyCodeUri);
 
-  /// Apply a referral code to the current registration session.
-  /// POST /api/v1/referral/apply
-  Future<Response> applyCode(String code) async {
-    return apiClient.postData(
-      AppConstants.referralApplyUri,
-      {'code': code.toUpperCase().trim()},
-    );
-  }
-
-  /// Fetch global referral program statistics.
   /// GET /api/v1/referral/stats
-  Future<Response> getStats() async {
-    return apiClient.getData(AppConstants.referralStatsUri);
-  }
+  /// Stats only: total_referrals, qualified, rewarded, total_earned_sdg.
+  Future<Response> getStats() =>
+      apiClient.getData(AppConstants.referralStatsUri);
+
+  /// GET /api/v1/referral/list?page=N
+  /// Paginated list of referred users (20/page).
+  Future<Response> getReferralList({int page = 1}) =>
+      apiClient.getData('${AppConstants.referralListUri}?page=$page');
+
+  /// POST /api/v1/referral/apply
+  /// body: { code }
+  /// Errors on self-referral, invalid code, or duplicate.
+  Future<Response> applyCode(String code) =>
+      apiClient.postData(AppConstants.referralApplyUri, {
+        'code': code.toUpperCase().trim(),
+      });
 }

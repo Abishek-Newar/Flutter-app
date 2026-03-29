@@ -10,6 +10,11 @@ class GlobalKeyManagerModel {
   final GlobalKey withdrawKey;
   final GlobalKey scrollableKey;
 
+  // Row-2 keys (must be distinct from Row-1 keys to avoid GlobalKey conflicts)
+  final GlobalKey sendAbroadKey;
+  final GlobalKey offlineWalletKey;
+  final GlobalKey referFriendKey;
+
   // List to store all the keys
   final List<GlobalKey> visibleKeys = [];
 
@@ -22,7 +27,10 @@ class GlobalKeyManagerModel {
         requestMoneyKey = GlobalKey(),
         sendMoneyRequestKey = GlobalKey(),
         withdrawKey = GlobalKey(),
-        scrollableKey = GlobalKey() {
+        scrollableKey = GlobalKey(),
+        sendAbroadKey = GlobalKey(),
+        offlineWalletKey = GlobalKey(),
+        referFriendKey = GlobalKey() {
     // Initialize the list with all the keys
     visibleKeys.addAll([
       appbarBalanceKey,

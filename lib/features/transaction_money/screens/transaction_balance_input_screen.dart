@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:naqde_user/common/models/config_model.dart';
-import 'package:naqde_user/features/add_money/controllers/add_money_controller.dart';
+import 'package:naqde_user/features/manual_transfer/screens/bank_list_screen.dart';
 import 'package:naqde_user/features/setting/controllers/profile_screen_controller.dart';
 import 'package:naqde_user/features/splash/controllers/splash_controller.dart';
 import 'package:naqde_user/features/transaction_money/controllers/contact_controller.dart';
@@ -409,7 +409,7 @@ class _TransactionBalanceInputScreenState extends State<TransactionBalanceInputS
   void _confirmationRoute(double amount) {
     final transactionMoneyController = Get.find<TransactionMoneyController>();
     if(widget.transactionType == TransactionType.addMoney){
-      Get.find<AddMoneyController>().addMoney(amount);
+      Get.to(() => const BankListScreen());
     }
     else if(widget.transactionType == TransactionType.withdrawRequest) {
       String? message;

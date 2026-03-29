@@ -11,7 +11,8 @@
       "Read(//c/Program Files/**)",
       "Read(//c//**)",
       "Bash(where java:*)",
-      "Bash(flutter clean:*)"
+      "Bash(flutter clean:*)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }

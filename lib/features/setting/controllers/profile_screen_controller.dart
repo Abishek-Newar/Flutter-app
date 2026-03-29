@@ -214,13 +214,13 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   void updateBalanceButtonTappedStatus({bool shouldUpdate = true}){
-    _showBalanceButtonTapped = true;
-
-    if(shouldUpdate){
-      update();
-    } else{
+    if(!shouldUpdate){
       _showBalanceButtonTapped = false;
+      return;
     }
+
+    _showBalanceButtonTapped = true;
+    update();
 
     Future.delayed(const Duration(seconds: AppConstants.balanceHideDurationInSecond),(){
       _showBalanceButtonTapped = false;

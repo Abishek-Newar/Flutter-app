@@ -161,19 +161,19 @@ class ThemeOneWidget extends StatelessWidget {
               return Row(children: [
 
                 // Remittance / Send Abroad
-                _Card(w: w, h: 90, showcaseKey: keyManager.appbarBalanceKey,
+                _Card(w: w, h: 90, showcaseKey: keyManager.sendAbroadKey,
                   isDone: false, icon: Icons.flight_takeoff_rounded,
                   color: const Color(0xFF00838F), label: 'send_abroad'.tr,
                   onTap: () => Get.toNamed(RouteHelper.getRemittanceCorridorRoute())),
 
                 // Offline Wallet
-                _Card(w: w, h: 90, showcaseKey: keyManager.cashOutKey,
+                _Card(w: w, h: 90, showcaseKey: keyManager.offlineWalletKey,
                   isDone: false, icon: Icons.wifi_off_rounded,
                   color: const Color(0xFF558B2F), label: 'offline_wallet'.tr,
                   onTap: () => Get.toNamed(RouteHelper.getOfflineWalletRoute())),
 
                 // Refer Friend
-                _Card(w: w, h: 90, showcaseKey: keyManager.requestMoneyKey,
+                _Card(w: w, h: 90, showcaseKey: keyManager.referFriendKey,
                   isDone: false, icon: Icons.group_add_rounded,
                   color: const Color(0xFFC62828), label: 'refer_friend'.tr,
                   onTap: () => Get.toNamed(RouteHelper.getReferralRoute())),

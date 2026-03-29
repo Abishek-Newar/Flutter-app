@@ -306,7 +306,12 @@ class BankDetailsScreen extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => const SubmitTransferScreen(),
+                builder: (_) => SubmitTransferScreen(bank: {
+                  'bank_name': bank.bankName,
+                  'account_name': bank.accountName,
+                  'account_number': bank.accountNumber,
+                  if (bank.iban != null) 'iban': bank.iban,
+                }),
               ),
             ),
             style: ElevatedButton.styleFrom(

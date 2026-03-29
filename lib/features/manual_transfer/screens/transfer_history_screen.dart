@@ -23,7 +23,7 @@ class _S extends State<TransferHistoryScreen> {
   Future<void> _load() async {
     setState(() { _loading = true; _error = false; });
     try {
-      final r = await Get.find<ApiClient>().getData(AppConstants.manualTransferHistoryUri);
+      final r = await Get.find<ApiClient>().getData(AppConstants.addMoneyHistoryUri);
       if (r.statusCode == 200) {
         _items = (r.body is Map
             ? (r.body['content'] ?? r.body['data'] ?? [])

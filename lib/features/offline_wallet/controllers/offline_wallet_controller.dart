@@ -121,17 +121,58 @@ class OfflineWalletController extends GetxController {
     }
   }
 
+  // ── Token generation ──────────────────────────────────────────────────────
+
+  /// Generates a pre-auth token for an offline payment.
+  /// Returns the token string on success, null on failure.
+  Future<String?> generateToken({
+    required double amount,
+    required String channel, // 'nfc' | 'qr' | 'bluetooth'
+    required String deviceId,
+  }) async {
+    try {
+      final response = await repo.generateToken(
+        amount: amount,
+        channel: channel,
+        deviceId: deviceId,
+      );
+      if (response.statusCode == 200 && response.body != null) {
+        return (response.body['data']?['token'] ?? response.body['token'])?.toString();
+      }
+    } catch (_) {}
+    return null;
+  }
+
   // ── API ───────────────────────────────────────────────────────────────────
 
   Future<void> loadStatus() async {
     try {
-      final response = await repo.getStatus();
-      if (response.statusCode == 200 && response.body != null) {
-        _status = OfflineWalletStatus.fromJson(response.body);
-        update();
+      // Fetch pending sync count
+      final pendingResp = await repo.getPendingSync();
+      if (pendingResp.statusCode == 200 && pendingResp.body != null) {
+        final data = pendingResp.body['data'] ?? pendingResp.body;
+        _pendingSyncCount = data is List ? data.length : ((data['count'] as num?)?.toInt() ?? 0);
       }
+
+      // Fetch active tokens
+      final tokensResp = await repo.getActiveTokens();
+      if (tokensResp.statusCode == 200 && tokensResp.body != null) {
+        final data = tokensResp.body['data'] ?? tokensResp.body;
+        if (data is Map) {
+          _status = OfflineWalletStatus(
+            isEnabled: true,
+            offlineBalance: (data['balance'] as num?)?.toDouble() ?? _balance.spendable,
+            maxOfflineBalance: (data['max_balance'] as num?)?.toDouble() ?? maxOfflineBalance,
+            pendingSyncCount: _pendingSyncCount,
+            lastSyncedAt: data['last_synced_at'] != null
+                ? DateTime.tryParse(data['last_synced_at'].toString())
+                : null,
+          );
+        }
+      }
+      update();
     } catch (_) {
-      // Offline — use local state
+      // Offline — keep local state
     }
   }
 
@@ -178,9 +219,35 @@ class OfflineWalletController extends GetxController {
   Future<void> syncNow() async {
     _isSyncing = true;
     update();
-    await txService.syncWithBackend();
+
+    try {
+      // Get pending transactions from local DB and send to backend
+      final pending = await txService.getTransactionHistory(limit: 50);
+      final unsynced = pending.where((t) => !t.synced).toList();
+
+      if (unsynced.isNotEmpty) {
+        final payload = unsynced.map((t) => {
+          'token':                t.id,
+          'recipient_identifier': t.receiverWalletId,
+          'amount':               t.amount,
+          'channel':              t.method.name,
+          'signed_payload':       t.signedPayload,
+          'offline_created_at':   t.timestamp.toIso8601String(),
+        }).toList();
+
+        final response = await repo.syncTransactions(payload);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          // Mark as synced in local DB via service
+          await txService.syncWithBackend();
+        }
+      }
+    } catch (_) {
+      // Sync failed — will retry on next connectivity restore
+    }
+
     _isSyncing = false;
     await loadHistory();
+    await loadStatus();
     update();
   }
 

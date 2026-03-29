@@ -60,7 +60,14 @@ class AppConstants {
   static const String reportReasonList             = '/api/v1/customer/dispute/reason/list';
   static const String createReportDispute          = '/api/v1/customer/dispute/create';
 
-  // ── Add Funds / Manual Transfer ───────────────────────────────────────────
+  // ── Add Money ─────────────────────────────────────────────────────────────
+  static const String addMoneyBanksUri    = '/api/v1/add-money/banks';
+  static const String addMoneyInitiateUri = '/api/v1/add-money/initiate';
+  static const String addMoneyReceiptUri  = '/api/v1/add-money/upload-receipt';
+  static const String addMoneyHistoryUri  = '/api/v1/add-money/history';
+  static const String addMoneyDetailUri   = '/api/v1/add-money'; // + /{reference}
+
+  // ── Add Funds / Manual Transfer (kept for backward compat) ────────────────
   static const String manualTransferBanksUri       = '/api/v1/manual-transfer/banks';
   static const String manualTransferSubmitUri      = '/api/v1/manual-transfer/submit';
   static const String manualTransferHistoryUri     = '/api/v1/manual-transfer/my-requests';
@@ -75,19 +82,21 @@ class AppConstants {
   static const String otpAgentRequestUri           = '/api/v1/otp/agent-request';
 
   // ── Referral Program ──────────────────────────────────────────────────────
-  static const String referralValidateUri          = '/api/v1/referral/validate';
-  static const String referralApplyUri             = '/api/v1/referral/apply';
-  static const String referralStatsUri             = '/api/v1/referral/stats';
+  static const String referralMyCodeUri  = '/api/v1/referral/my-code';
+  static const String referralApplyUri   = '/api/v1/referral/apply';
+  static const String referralStatsUri   = '/api/v1/referral/stats';
+  static const String referralListUri    = '/api/v1/referral/list';
 
   // ── Trust & Settlement ────────────────────────────────────────────────────
   static const String trustBalancesUri             = '/api/v1/trust/balances';
   static const String trustLedgerUri               = '/api/v1/trust/ledger';
   static const String trustRebalanceUri            = '/api/v1/trust/rebalance';
 
-  // ── Offline Wallet / Sync ─────────────────────────────────────────────────
-  static const String offlineSyncUri               = '/api/v1/offline/sync';
-  static const String offlineValidateUri           = '/api/v1/offline/validate';
-  static const String offlineStatusUri             = '/api/v1/offline/status';
+  // ── Offline Wallet ────────────────────────────────────────────────────────
+  static const String offlineGenerateTokenUri = '/api/v1/offline-wallet/generate-token';
+  static const String offlineWalletSyncUri    = '/api/v1/offline-wallet/sync';
+  static const String offlinePendingSyncUri   = '/api/v1/offline-wallet/pending-sync';
+  static const String offlineTokensUri        = '/api/v1/offline-wallet/tokens';
 
   // ── Shared Preference Keys ────────────────────────────────────────────────
   static const String theme                        = 'theme';
